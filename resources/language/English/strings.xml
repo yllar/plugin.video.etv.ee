@@ -4,4 +4,8 @@
     <string id="201">The error message is:</string>
     <string id="202">Unable to find the playback URL</string>
     <string id="203">Unable to retrieve list of programs</string>
+    <string id="30003">Today</string>
+    <!-- settings -->
+    <string id="30004">How many days to show</string>
+    <string id="30005">General</string>
 </strings>

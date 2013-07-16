@@ -4,4 +4,8 @@
     <string id="201">Veateade:</string>
     <string id="202">Video aadressi leidmine nurjus</string>
     <string id="203">Saadete nimekirja hankimine nurjus</string>
+    <string id="30003">Täna</string>
+    <!-- seaded -->
+    <string id="30004">Mitme päeva saateid näidatakse</string>
+    <string id="30005">Üldine</string>
 </strings>

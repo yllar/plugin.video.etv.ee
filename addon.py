@@ -39,6 +39,11 @@ try:
 except locale.Error:
   locale.setlocale(locale.LC_ALL, 'C')
 
+__settings__  = xbmcaddon.Addon(id='plugin.video.etv.ee')
+
+DAYS = int(__settings__.getSetting('days'))
+if DAYS < 1:
+  DAYS = 1
 
 class EtvException(Exception):
   pass
@@ -69,13 +74,13 @@ class Etv(object):
   def listDates(self,channel):
     items = list()
 
-    tana = "Täna %s" % datetime.now().strftime('%Y-%m-%d')
+    tana = "%s %s" % (ADDON.getLocalizedString(30003), datetime.now().strftime('%Y-%m-%d'))
     tanad = datetime.now().strftime('%Y-%m-%d')
     item = xbmcgui.ListItem(tana, iconImage=FANART)
     item.setProperty('Fanart_Image', FANART)
     items.append((PATH + '?channel=%s&date=%s' % (channel,tanad), item, True))
     
-    for paevad in range(1,31):
+    for paevad in range(1,DAYS):
       paev = datetime.now() - timedelta(days=paevad)
       paevd =  paev.strftime('%A %Y-%m-%d')
       paev = paev.strftime('%Y-%m-%d')
