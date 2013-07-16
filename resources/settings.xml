@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+<category label="30005">
+	<setting id="days" type="number" label="30004" default="31"/>
+</category>                                                                                                       
+</settings>
