@@ -64,7 +64,7 @@ class Etv(object):
 	
   def listChannels(self):
     items = list()
-    item = xbmcgui.ListItem('etv', iconImage=FANART)
+    item = xbmcgui.ListItem('ETV', iconImage=FANART)
     item.setProperty('Fanart_Image', FANART)
     items.append((PATH + '?channel=%s' % 'etv', item, True))
     xbmcplugin.addDirectoryItems(HANDLE, items)
