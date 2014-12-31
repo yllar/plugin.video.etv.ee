@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#      Copyright (C) 2014 Yllar Pajus
+#      Copyright (C) 2015 Yllar Pajus
 #      http://ku.uk.is
 #
 #  This Program is free software; you can redistribute it and/or modify
@@ -77,6 +77,16 @@ class Etv(object):
     item = xbmcgui.ListItem('ETV2', iconImage=LOGOETV2)
     item.setProperty('Fanart_Image', FANART2)
     items.append((PATH + '?channel=%s' % 'etv2', item, True))
+    item = xbmcgui.ListItem('ETV otse', iconImage=LOGOETV)
+    item.setProperty('Fanart_Image', FANART)
+    item.setInfo('video', infoLabels={"Title": "ETV otse"})
+    item.setProperty('IsPlayable', 'true')
+    items.append((PATH + '?vaata=rtmp://wowza3.err.ee:80/live/%s' % 'etv', item, False))
+    item = xbmcgui.ListItem('ETV2 otse', iconImage=LOGOETV2)
+    item.setProperty('Fanart_Image', FANART2)
+    item.setInfo('video', infoLabels={"Title": "ETV2 otse"})
+    item.setProperty('IsPlayable', 'true')
+    items.append((PATH + '?vaata=rtmp://wowza3.err.ee:80/live/%s' % 'etv2', item, False))
     xbmcplugin.addDirectoryItems(HANDLE, items)
     xbmcplugin.endOfDirectory(HANDLE)
 
@@ -148,7 +158,10 @@ class Etv(object):
   def playStream(self,vaata):
     if vaata == '00000000-0000-0000-0000-000000000000':
       raise EtvException(ADDON.getLocalizedString(202))
-    saade = EtvAddon.getMediaLocation(vaata)
+    if ":80/live" in vaata:
+      saade = vaata
+    else:
+      saade = EtvAddon.getMediaLocation(vaata)
     buggalo.addExtraData('saade', saade)
     playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
     playlist.clear()
