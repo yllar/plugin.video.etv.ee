@@ -77,16 +77,28 @@ class Etv(object):
     item = xbmcgui.ListItem('ETV2', iconImage=LOGOETV2)
     item.setProperty('Fanart_Image', FANART2)
     items.append((PATH + '?channel=%s' % 'etv2', item, True))
+    item = xbmcgui.ListItem('ETV+', iconImage=LOGOETVPLUSS)
+    item.setProperty('Fanart_Image', FANART3)
+    items.append((PATH + '?channel=%s' % 'etvpluss', item, True))
+    
     item = xbmcgui.ListItem('ETV otse', iconImage=LOGOETV)
     item.setProperty('Fanart_Image', FANART)
     item.setInfo('video', infoLabels={"Title": "ETV otse"})
     item.setProperty('IsPlayable', 'true')
     items.append((PATH + '?vaata=rtmp://wowza3.err.ee:80/live/%s' % 'etv', item, False))
+    
     item = xbmcgui.ListItem('ETV2 otse', iconImage=LOGOETV2)
     item.setProperty('Fanart_Image', FANART2)
     item.setInfo('video', infoLabels={"Title": "ETV2 otse"})
     item.setProperty('IsPlayable', 'true')
-    items.append((PATH + '?vaata=rtmp://wowza3.err.ee:80/live/%s' % 'etv2', item, False))
+    items.append((PATH + '?vaata=rtmp://striimid.err.ee:80/live/%s' % 'etv2', item, False))
+    
+    item = xbmcgui.ListItem('ETV+ otse', iconImage=LOGOETV2)
+    item.setProperty('Fanart_Image', FANART2)
+    item.setInfo('video', infoLabels={"Title": "ETV+ otse"})
+    item.setProperty('IsPlayable', 'true')
+    items.append((PATH + '?vaata=rtmp://striimid.err.ee:80/live/%s' % 'etvpluss', item, False))
+    
     xbmcplugin.addDirectoryItems(HANDLE, items)
     xbmcplugin.endOfDirectory(HANDLE)
 
@@ -185,8 +197,10 @@ if __name__ == '__main__':
   ICON = os.path.join(ADDON.getAddonInfo('path'), 'icon.png')
   FANART = os.path.join(ADDON.getAddonInfo('path'), 'etv.jpg')
   FANART2 = os.path.join(ADDON.getAddonInfo('path'), 'etv2.jpg')
+  FANART3 = os.path.join(ADDON.getAddonInfo('path'), 'etv+.jpg')
   LOGOETV = os.path.join(ADDON.getAddonInfo('path'), 'etv-logo.png')
   LOGOETV2 = os.path.join(ADDON.getAddonInfo('path'), 'etv2-logo.png')
+  LOGOETVPLUSS = os.path.join(ADDON.getAddonInfo('path'), 'etv+-logo.png')
   
   CACHE_PATH = xbmc.translatePath(ADDON.getAddonInfo("Profile"))
   if not os.path.exists(CACHE_PATH):
