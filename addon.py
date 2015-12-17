@@ -93,8 +93,8 @@ class Etv(object):
     item.setProperty('IsPlayable', 'true')
     items.append((PATH + '?vaata=rtmp://striimid.err.ee:80/live/%s' % 'etv2', item, False))
     
-    item = xbmcgui.ListItem('ETV+ otse', iconImage=LOGOETV2)
-    item.setProperty('Fanart_Image', FANART2)
+    item = xbmcgui.ListItem('ETV+ otse', iconImage=LOGOETVPLUSS)
+    item.setProperty('Fanart_Image', FANART3)
     item.setInfo('video', infoLabels={"Title": "ETV+ otse"})
     item.setProperty('IsPlayable', 'true')
     items.append((PATH + '?vaata=rtmp://striimid.err.ee:80/live/%s' % 'etvpluss', item, False))
