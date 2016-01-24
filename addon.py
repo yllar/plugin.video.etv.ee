@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#      Copyright (C) 2015 Yllar Pajus
-#      http://ku.uk.is
+#      Copyright (C) 2016 Yllar Pajus
+#      https://pilves.eu
 #
 #  This Program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     os.makedirs(CACHE_PATH)
     
 
-  buggalo.SUBMIT_URL = 'http://ku.uk.is/exception/submit.php'
+  buggalo.SUBMIT_URL = 'https://pilves.eu/exception/submit.php'
   
   EtvAddon = Etv()
   try:
