@@ -85,19 +85,19 @@ class Etv(object):
     item.setProperty('Fanart_Image', FANART)
     item.setInfo('video', infoLabels={"Title": "ETV otse"})
     item.setProperty('IsPlayable', 'true')
-    items.append((PATH + '?vaata=rtmp://wowza3.err.ee:80/live/%s' % 'etv', item, False))
+    items.append((PATH + '?vaata=http://etvstream.err.ee/live/smil:etv/playlist.m3u8', item, False))
     
     item = xbmcgui.ListItem('ETV2 otse', iconImage=LOGOETV2)
     item.setProperty('Fanart_Image', FANART2)
     item.setInfo('video', infoLabels={"Title": "ETV2 otse"})
     item.setProperty('IsPlayable', 'true')
-    items.append((PATH + '?vaata=rtmp://striimid.err.ee:80/live/%s' % 'etv2', item, False))
+    items.append((PATH + '?vaata=http://etv2stream.err.ee/live/smil:etv2/playlist.m3u8', item, False))
     
     item = xbmcgui.ListItem('ETV+ otse', iconImage=LOGOETVPLUSS)
     item.setProperty('Fanart_Image', FANART3)
     item.setInfo('video', infoLabels={"Title": "ETV+ otse"})
     item.setProperty('IsPlayable', 'true')
-    items.append((PATH + '?vaata=rtmp://striimid.err.ee:80/live/%s' % 'etvpluss', item, False))
+    items.append((PATH + '?vaata=http://striimid.err.ee/live/smil:etvpluss/playlist.m3u8', item, False))
     
     xbmcplugin.addDirectoryItems(HANDLE, items)
     xbmcplugin.endOfDirectory(HANDLE)
@@ -166,11 +166,22 @@ class Etv(object):
       raise EtvException(ADDON.getLocalizedString(202))
     else:
       raise EtvException(ADDON.getLocalizedString(202))
-    
+
+  def getSubtitle(self,saade,language):
+    subtitleApiUrl = 'http://etv.err.ee/services/api/subtitles/check?file=%s' % saade.replace('_definst_/','@').replace('rtmp','')
+    html = self.downloadUrl(subtitleApiUrl)
+    if html:
+      html = json.loads(html)
+      try:
+        subtitleId =  html['subtitles'][language]['id']
+        # http://etv.err.ee/services/subtitles/file/922/922_ET.vtt
+        return 'http://etv.err.ee/services/subtitles/file/%s/%s_%s.vtt' % (subtitleId,subtitleId,language)
+      except:
+        pass
   def playStream(self,vaata):
     if vaata == '00000000-0000-0000-0000-000000000000':
       raise EtvException(ADDON.getLocalizedString(202))
-    if ":80/live" in vaata:
+    if "live/" in vaata:
       saade = vaata
     else:
       saade = EtvAddon.getMediaLocation(vaata)
@@ -179,6 +190,13 @@ class Etv(object):
     playlist.clear()
     
     item = xbmcgui.ListItem(saade, iconImage = ICON, path = saade)
+
+    if __settings__.getSetting('subtitles') == "true":
+      try:
+        subs = (self.getSubtitle(saade,'ET'),)
+        item.setSubtitles(subs)
+      except:
+        pass
     playlist.add(saade,item)
     xbmcplugin.setResolvedUrl(HANDLE, True, item)
 
