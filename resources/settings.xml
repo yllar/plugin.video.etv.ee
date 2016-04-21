@@ -3,5 +3,7 @@
 <category label="30005">
 	<setting id="days" type="number" label="30004" default="31"/>
 	<setting id="subtitles" type="bool" label="30006" default="true"/>
+	<setting id="primaryLanguage" type="labelenum" label="30007" lvalues="30009|30010|30011" default="0"/>
+	<setting id="secondaryLanguage" type="labelenum" label="30008" lvalues="30009|30010|30011" default="1"/>
 </category>                                                                                                       
 </settings>

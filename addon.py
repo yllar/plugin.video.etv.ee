@@ -167,17 +167,33 @@ class Etv(object):
     else:
       raise EtvException(ADDON.getLocalizedString(202))
 
-  def getSubtitle(self,saade,language):
+  def getSubtitle(self, saade, primaryLanguage, secondaryLanguage):
     subtitleApiUrl = 'http://etv.err.ee/services/api/subtitles/check?file=%s' % saade.replace('_definst_/','@').replace('rtmp','')
     html = self.downloadUrl(subtitleApiUrl)
     if html:
       html = json.loads(html)
-      try:
-        subtitleId =  html['subtitles'][language]['id']
-        # http://etv.err.ee/services/subtitles/file/922/922_ET.vtt
-        return 'http://etv.err.ee/services/subtitles/file/%s/%s_%s.vtt' % (subtitleId,subtitleId,language)
-      except:
-        pass
+      languages = []
+      languages.extend((primaryLanguage,secondaryLanguage))
+      for language in languages:
+        try:
+          subtitleId =  html['subtitles'][language]['id']
+          # http://etv.err.ee/services/subtitles/file/922/922_ET.vtt
+          return 'http://etv.err.ee/services/subtitles/file/%s/%s_%s.vtt' % (subtitleId,subtitleId,language)
+        except:
+          pass
+
+  def getSubtitleLanguage(self,lang):
+    #helper function to map human readable settings to required abbreviation
+    if int(lang) == 0:
+      return "ET"
+    elif int(lang) == 1:
+      return "VA"
+    elif int(lang) == 2:
+      return "RU"
+    else:
+      pass
+
+
   def playStream(self,vaata):
     if vaata == '00000000-0000-0000-0000-000000000000':
       raise EtvException(ADDON.getLocalizedString(202))
@@ -190,11 +206,11 @@ class Etv(object):
     playlist.clear()
     
     item = xbmcgui.ListItem(saade, iconImage = ICON, path = saade)
-
     if __settings__.getSetting('subtitles') == "true":
       try:
-        subs = (self.getSubtitle(saade,'ET'),)
-        item.setSubtitles(subs)
+        subs = (self.getSubtitle(saade, self.getSubtitleLanguage(__settings__.getSetting('primaryLanguage')), self.getSubtitleLanguage(__settings__.getSetting('secondaryLanguage'))),)
+        if len(subs[0]) > 1:
+          item.setSubtitles(subs)
       except:
         pass
     playlist.add(saade,item)
