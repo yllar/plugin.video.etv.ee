@@ -207,9 +207,9 @@ class Etv(object):
     
     item = xbmcgui.ListItem(saade, iconImage = ICON, path = saade)
     if __settings__.getSetting('subtitles') == "true":
+      subs = (self.getSubtitle(saade, self.getSubtitleLanguage(__settings__.getSetting('primaryLanguage')), self.getSubtitleLanguage(__settings__.getSetting('secondaryLanguage'))),)
       try:
-        subs = (self.getSubtitle(saade, self.getSubtitleLanguage(__settings__.getSetting('primaryLanguage')), self.getSubtitleLanguage(__settings__.getSetting('secondaryLanguage'))),)
-        if len(subs[0]) > 1:
+        if len(subs[0]) > 1 :
           item.setSubtitles(subs)
       except:
         pass
