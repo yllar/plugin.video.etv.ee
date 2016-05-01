@@ -124,7 +124,7 @@ class Etv(object):
   
   def listSchedule(self,channel,date):
     year,month,day = date.split("-")
-    url = 'http://%s.err.ee/api/loader/GetTimelineDay/?year=%s&month=%s&day=%s' % (channel,year,month,day)
+    url = 'http://otse.err.ee/api/schedule/GetTimelineDay/?year=%s&month=%s&day=%s&channel=%s&returnPlaylist=true' % (year,month,day,channel)
     buggalo.addExtraData('url', url)
     html = self.downloadUrl(url)
     if not html:
@@ -133,23 +133,24 @@ class Etv(object):
     html = json.loads(html)
     items = list()
     for s in html:
-      if s['Image']:
-        fanart = 'http://static.err.ee/gridfs/%s?width=720' % s['Image']
-      else:
-        fanart = FANART
-      title = s['Header']
-      plot = s['Lead']
+      if s['Type'] == 16:
+        if s['Image']:
+          fanart = 'http://static.err.ee/gridfs/%s?width=720' % s['Image']
+        else:
+          fanart = FANART
+        title = s['Header']
+        plot = s['Lead']
       
-      infoLabels = {
-	'plot' : plot,
-	'title' : title
-      }
+        infoLabels = {
+	  'plot' : plot,
+	  'title' : title
+        }
 
-      item = xbmcgui.ListItem(title, iconImage = fanart)
-      item.setInfo('video', infoLabels)
-      item.setProperty('IsPlayable', 'true')
-      item.setProperty('Fanart_Image', fanart)
-      items.append((PATH + '?vaata=%s' %  s['Id'], item))
+        item = xbmcgui.ListItem(title, iconImage = fanart)
+        item.setInfo('video', infoLabels)
+        item.setProperty('IsPlayable', 'true')
+        item.setProperty('Fanart_Image', fanart)
+        items.append((PATH + '?vaata=%s' %  s['Id'], item))
     xbmc.executebuiltin("Container.SetViewMode(500)")
     xbmcplugin.addSortMethod(HANDLE, xbmcplugin.SORT_METHOD_UNSORTED)
     xbmcplugin.addDirectoryItems(HANDLE, items)
