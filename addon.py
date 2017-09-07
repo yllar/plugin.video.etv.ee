@@ -92,19 +92,19 @@ class Etv(object):
         item.setProperty('Fanart_Image', FANART)
         item.setInfo('video', infoLabels={"Title": "ETV otse"})
         item.setProperty('IsPlayable', 'true')
-        items.append((PATH + '?vaata=http://etvstream.err.ee/live/smil:etv/playlist.m3u8', item, False))
+        items.append((PATH + '?vaata=http://sb.err.ee/live/etv.m3u8', item, False))
 
         item = xbmcgui.ListItem('ETV2 otse', iconImage=LOGOETV2)
         item.setProperty('Fanart_Image', FANART2)
         item.setInfo('video', infoLabels={"Title": "ETV2 otse"})
         item.setProperty('IsPlayable', 'true')
-        items.append((PATH + '?vaata=http://etv2stream.err.ee/live/smil:etv2/playlist.m3u8', item, False))
+        items.append((PATH + '?vaata=http://sb.err.ee/live/etv2.m3u8', item, False))
 
         item = xbmcgui.ListItem('ETV+ otse', iconImage=LOGOETVPLUSS)
         item.setProperty('Fanart_Image', FANART3)
         item.setInfo('video', infoLabels={"Title": "ETV+ otse"})
         item.setProperty('IsPlayable', 'true')
-        items.append((PATH + '?vaata=http://striimid.err.ee/live/smil:etvpluss/playlist.m3u8', item, False))
+        items.append((PATH + '?vaata=http://sb.err.ee/live/etvpluss.m3u8', item, False))
 
         xbmcplugin.addDirectoryItems(HANDLE, items)
         xbmcplugin.endOfDirectory(HANDLE)
@@ -219,14 +219,15 @@ class Etv(object):
         else:
             saade = EtvAddon.get_media_data(EtvAddon.get_media_location(vaata)).replace('//','http://')
         buggalo.addExtraData('saade', saade)
+        xbmc.log('saade: %s' % saade, xbmc.LOGNOTICE)
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
 
         item = xbmcgui.ListItem(saade, iconImage=ICON, path=saade)
         if __settings__.getSetting('subtitles') == "true":
-            subs = (self.get_subtitle(vaata, self.get_subtitle_language(__settings__.getSetting('primaryLanguage')),
-                                     self.get_subtitle_language(__settings__.getSetting('secondaryLanguage'))),)
             try:
+                subs = (self.get_subtitle(vaata, self.get_subtitle_language(__settings__.getSetting('primaryLanguage')),
+                                     self.get_subtitle_language(__settings__.getSetting('secondaryLanguage'))),)
                 if len(subs[0]) > 1:
                     item.setSubtitles(subs)
             except:
