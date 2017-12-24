@@ -92,19 +92,19 @@ class Etv(object):
         item.setProperty('Fanart_Image', FANART)
         item.setInfo('video', infoLabels={"Title": "ETV otse"})
         item.setProperty('IsPlayable', 'true')
-        items.append((PATH + '?vaata=http://sb.err.ee/live/etv.m3u8', item, False))
+        items.append(('http://err1.babahhcdn.com/live/etv.m3u8', item))
 
         item = xbmcgui.ListItem('ETV2 otse', iconImage=LOGOETV2)
         item.setProperty('Fanart_Image', FANART2)
         item.setInfo('video', infoLabels={"Title": "ETV2 otse"})
         item.setProperty('IsPlayable', 'true')
-        items.append((PATH + '?vaata=http://sb.err.ee/live/etv2.m3u8', item, False))
+        items.append(('http://err1.babahhcdn.com/live/etv2.m3u8', item))
 
         item = xbmcgui.ListItem('ETV+ otse', iconImage=LOGOETVPLUSS)
         item.setProperty('Fanart_Image', FANART3)
         item.setInfo('video', infoLabels={"Title": "ETV+ otse"})
         item.setProperty('IsPlayable', 'true')
-        items.append((PATH + '?vaata=http://sb.err.ee/live/etvpluss.m3u8', item, False))
+        items.append(('http://err1.babahhcdn.com/live/etvpluss.m3u8', item))
 
         xbmcplugin.addDirectoryItems(HANDLE, items)
         xbmcplugin.endOfDirectory(HANDLE)
