@@ -92,7 +92,8 @@ class Etv(object):
         item.setProperty('Fanart_Image', FANART)
         item.setInfo('video', infoLabels={"Title": "ETV otse"})
         item.setProperty('IsPlayable', 'true')
-        items.append(('http://err1.babahhcdn.com/live/etv.m3u8', item))
+        # items.append(('http://err1.babahhcdn.com/live/etv.m3u8', item))
+        items.append(('https://err10.babahhcdn.com/live/etv.m3u8', item))
 
         item = xbmcgui.ListItem('ETV2 otse', iconImage=LOGOETV2)
         item.setProperty('Fanart_Image', FANART2)
@@ -130,8 +131,8 @@ class Etv(object):
 
     def list_schedule(self, channel, date):
         year, month, day = date.split("-")
-        url = 'http://otse.err.ee/api/schedule/GetTimelineDay/?year=%s&month=%s&day=%s&channel=%s&returnPlaylist=true' % (
-        year, month, day, channel)
+        url = 'https://etv.err.ee/api/tvSchedule/getTimelineSchedule2?year=%s&month=%s&day=%s&channel=%s' % (
+            year, month, day, channel)
         buggalo.addExtraData('url', url)
         html = self.download_url(url)
         if not html:
@@ -140,13 +141,13 @@ class Etv(object):
         html = json.loads(html)
         items = list()
         for s in html:
-            if s['Type'] == 16:
-                if s['Image']:
-                    fanart = 'http://static.err.ee/gridfs/%s?width=720' % s['Image']
+            if s['mediaExist']:
+                if s['horizontalPhotoUrl']:
+                    fanart = s['horizontalPhotoUrl']
                 else:
                     fanart = FANART
-                title = s['Header']
-                plot = s['Lead']
+                title = s['programName']
+                plot = s['name']
 
                 infoLabels = {
                     'plot': plot,
@@ -157,7 +158,7 @@ class Etv(object):
                 item.setInfo('video', infoLabels)
                 item.setProperty('IsPlayable', 'true')
                 item.setProperty('Fanart_Image', fanart)
-                items.append((PATH + '?vaata=%s' % s['Id'], item))
+                items.append((PATH + '?vaata=%s' % s['contentId'], item))
         xbmc.executebuiltin("Container.SetViewMode(500)")
         xbmcplugin.addSortMethod(HANDLE, xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.addDirectoryItems(HANDLE, items)
@@ -172,33 +173,33 @@ class Etv(object):
             return json_data['media']['src']['hls']
 
     def get_media_location(self, key):
-        url = "http://etv.err.ee/api/loader/GetTimeLineContent/%s" % key
+        url = "https://etv.err.ee/api/tv/getTvPageData?contentId=%s&contentOnly=true" % key
         buggalo.addExtraData('url', url)
         html = self.download_url(url)
         if html:
             html = json.loads(html)
-            for url in html['MediaSources']:
-                xbmc.log('get_media_location_url: %s' % url['Content'], xbmc.LOGNOTICE)
-                return url['Content']
-            raise EtvException(ADDON.getLocalizedString(202))
+            url = html['showInfo']['media']['src']['hls']
+
+            sub = []
+            languages = []
+            languages.extend((
+                self.get_subtitle_language(__settings__.getSetting('primaryLanguage')),
+                self.get_subtitle_language(__settings__.getSetting('secondaryLanguage'))
+            ))
+
+            try:
+                for language in languages:
+                    for subtitle in html['showInfo']['media']['subtitles']:
+                        if subtitle['srclang'] == language:
+                            xbmc.log('subtitle path: %s' % (subtitle['src']), xbmc.LOGNOTICE)
+                            sub = (subtitle['src'], language)
+                            break
+            except:
+                pass
+            
+            return url.replace('//', 'https://'), sub
         else:
             raise EtvException(ADDON.getLocalizedString(202))
-
-    def get_subtitle(self, saade, primaryLanguage, secondaryLanguage):
-        subtitle_api_url = 'http://etv.err.ee/services/api/subtitles/check?file=%s' % self.get_media_location(saade)
-        xbmc.log('get_subtitle_url: %s' % subtitle_api_url, xbmc.LOGNOTICE)
-        html = self.download_url(subtitle_api_url)
-        if html:
-            html = json.loads(html)
-            languages = []
-            languages.extend((primaryLanguage, secondaryLanguage))
-            for language in languages:
-                try:
-                    subtitleId = html['subtitles'][language]['id']
-                    # http://etv.err.ee/services/subtitles/file/922/922_ET.vtt
-                    return 'http://etv.err.ee/services/subtitles/file/%s/%s_%s.vtt' % (subtitleId, subtitleId, language)
-                except:
-                    pass
 
     def get_subtitle_language(self, lang):
         # helper function to map human readable settings to required abbreviation
@@ -217,21 +218,19 @@ class Etv(object):
         if "live/" in vaata:
             saade = vaata
         else:
-            saade = EtvAddon.get_media_data(EtvAddon.get_media_location(vaata)).replace('//','http://')
+            saade, subs = EtvAddon.get_media_location(vaata)
         buggalo.addExtraData('saade', saade)
         xbmc.log('saade: %s' % saade, xbmc.LOGNOTICE)
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
 
         item = xbmcgui.ListItem(saade, iconImage=ICON, path=saade)
-        if __settings__.getSetting('subtitles') == "true":
-            try:
-                subs = (self.get_subtitle(vaata, self.get_subtitle_language(__settings__.getSetting('primaryLanguage')),
-                                     self.get_subtitle_language(__settings__.getSetting('secondaryLanguage'))),)
-                if len(subs[0]) > 1:
-                    item.setSubtitles(subs)
-            except:
-                pass
+
+        try:
+            if subs:
+                item.setSubtitles(subs)
+        except:
+            pass
         playlist.add(saade, item)
         xbmcplugin.setResolvedUrl(HANDLE, True, item)
 
