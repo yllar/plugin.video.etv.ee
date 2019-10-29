@@ -141,24 +141,29 @@ class Etv(object):
         html = json.loads(html)
         items = list()
         for s in html:
-            if s['mediaExist']:
-                if s['horizontalPhotoUrl']:
-                    fanart = s['horizontalPhotoUrl']
-                else:
-                    fanart = FANART
-                title = s['programName']
-                plot = s['name']
+            try:
+                if s['contents'][0]["medias"]:
+                    if s["contents"][0]["photos"][0]["photoTypes"]["26"]["url"]:
+                        fanart = s["contents"][0]["photos"][0]["photoTypes"]["26"]["url"]
+                    else:
+                        fanart = FANART
+                    title = s['name']
+                    plot = s['extension']
+                    year = s['progProdYear']
 
-                infoLabels = {
-                    'plot': plot,
-                    'title': title
-                }
+                    infoLabels = {
+                        'plot': plot,
+                        'title': title,
+                        'year': year
+                    }
 
-                item = xbmcgui.ListItem(title, iconImage=fanart)
-                item.setInfo('video', infoLabels)
-                item.setProperty('IsPlayable', 'true')
-                item.setProperty('Fanart_Image', fanart)
-                items.append((PATH + '?vaata=%s' % s['contentId'], item))
+                    item = xbmcgui.ListItem(title, iconImage=fanart)
+                    item.setInfo('video', infoLabels)
+                    item.setProperty('IsPlayable', 'true')
+                    item.setProperty('Fanart_Image', fanart)
+                    items.append((PATH + '?vaata=%s' % s['contentId'], item))
+            except:
+                pass
         xbmc.executebuiltin("Container.SetViewMode(500)")
         xbmcplugin.addSortMethod(HANDLE, xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.addDirectoryItems(HANDLE, items)
