@@ -201,7 +201,7 @@ class Etv(object):
             except:
                 pass
             
-            return url.replace('//', 'https://'), sub
+            return url.replace('//', 'https://', 1), sub
         else:
             raise EtvException(ADDON.getLocalizedString(202))
 
