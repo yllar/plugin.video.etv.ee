@@ -34,6 +34,8 @@ import xbmcplugin
 
 import buggalo
 
+import inputstreamhelper
+
 try:
     locale.setlocale(locale.LC_ALL, 'et_EE.UTF-8')
 except locale.Error:
@@ -45,6 +47,9 @@ DAYS = int(__settings__.getSetting('days'))
 if DAYS < 1:
     DAYS = 1
 
+KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion').split('.')[0])
+DRM = 'com.widevine.alpha'
+is_helper = inputstreamhelper.Helper('mpd', drm=DRM)
 
 class Logger:
     def write(data):
@@ -178,12 +183,18 @@ class Etv(object):
 
     def get_media_location(self, key):
         url = "https://etv.err.ee/api/tv/getTvPageData?contentId=%s&contentOnly=true" % key
+        token = ""
+        license_server = ""        
         buggalo.addExtraData('url', url)
         html = self.download_url(url)
         if html:
             html = json.loads(html)
             url = html['showInfo']['media']['src']['hls']
-
+            drm = html['pageControlData']['mainContent']['medias'][0]['restrictions']['drm']
+            if drm:
+                token = html['pageControlData']['mainContent']['medias'][0]['jwt']
+                license_server = html['pageControlData']['mainContent']['medias'][0]['licenseServerUrl']['widevine']
+                url = html['pageControlData']['mainContent']['medias'][0]['src']['dash']            
             sub = []
             languages = []
             languages.extend((
@@ -201,7 +212,7 @@ class Etv(object):
             except:
                 pass
             
-            return url.replace('//', 'https://', 1), sub
+            return url.replace('//', 'https://', 1), sub, token, license_server
         else:
             raise EtvException(ADDON.getLocalizedString(202))
 
@@ -222,14 +233,24 @@ class Etv(object):
         if "live/" in vaata:
             saade = vaata
         else:
-            saade, subs = EtvAddon.get_media_location(vaata)
+            saade, subs, token, license_server = EtvAddon.get_media_location(vaata)
         buggalo.addExtraData('saade', saade)
         xbmc.log('saade: %s' % saade, xbmc.LOGNOTICE)
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
 
         item = xbmcgui.ListItem(saade, iconImage=ICON, path=saade)
-
+        if token:
+            if is_helper.check_inputstream():
+               item.setContentLookup(False)
+               item.setMimeType('application/dash+xml')
+               if KODI_VERSION_MAJOR >= 19:
+                item.setProperty('inputstream', is_helper.inputstream_addon)
+               else:
+                item.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+                item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+                item.setProperty('inputstream.adaptive.license_type', DRM)
+                item.setProperty('inputstream.adaptive.license_key', license_server + '|X-AxDRM-Message='+token+'|R{SSM}|')
         try:
             if subs:
                 item.setSubtitles(subs)
