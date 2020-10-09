@@ -1,0 +1,73 @@
+# Kodi Media Center language file
+# Addon Name: plugin.video.etv.ee
+# Addon id: plugin.video.etv.ee
+# Addon Provider: Üllar
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.etv.ee\n"
+"Report-Msgid-Bugs-To: N/A\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Üllar\n"
+"Language-Team: Estonian (Estonia)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# msgctxt "Addon Summary"
+# msgid "etv.ee plugin"
+# msgstr "etv.ee plugin"
+
+msgctxt "#200"
+msgid "An error occurred while communication with ETV."
+msgstr ""
+
+msgctxt ""201"
+msgid "The error message is:"
+msgstr ""
+
+msgctxt "#202"
+msgid "Unable to find the playback URL"
+msgstr ""
+
+msgctxt "#203"
+msgid "Unable to retrieve list of programs"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Today"
+msgstr ""
+
+msgctxt "#30004"
+msgid "How many days to show"
+msgstr ""
+
+msgctxt "#30005"
+msgid "General"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Show subtitles"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Primary preference"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Secondary preference"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Estonian"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Hearing impaired"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Russian"
+msgstr ""
