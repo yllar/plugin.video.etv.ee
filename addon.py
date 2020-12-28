@@ -107,8 +107,8 @@ class Etv(object):
         for s in html:
             try:
                 if s['contents'][0]["medias"]:
-                    if s["contents"][0]["photos"][0]["photoTypes"]["26"]["url"]:
-                        fanart = s["contents"][0]["photos"][0]["photoTypes"]["26"]["url"]
+                    if s["contents"][0]["horizontalPhotos"][0]["photoTypes"]["26"]["url"]:
+                        fanart = s["contents"][0]["horizontalPhotos"][0]["photoTypes"]["26"]["url"]
                     else:
                         fanart = FANART
                     title = s['name']
