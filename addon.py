@@ -112,8 +112,8 @@ class Etv(object):
                     else:
                         fanart = FANART
                     title = s['name']
-                    plot = s['extension']
-                    year = s['progProdYear']
+                    plot = s['programName']
+                    year = s['idec']
 
                     infoLabels = {
                         'plot': plot,
