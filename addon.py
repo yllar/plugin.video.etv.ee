@@ -164,7 +164,6 @@ class Etv(object):
                 for language in languages:
                     for subtitle in html['showInfo']['media']['subtitles']:
                         if subtitle['srclang'] == language:
-                            xbmc.log('subtitle path: %s' % (subtitle['src']), xbmc.LOGNOTICE)
                             sub = (subtitle['src'], language)
                             break
             except:
@@ -181,7 +180,6 @@ class Etv(object):
             saade = vaata
         else:
             saade, subs, token, license_server = EtvAddon.get_media_location(vaata)
-        xbmc.log('saade: %s' % saade, xbmc.LOGNOTICE)
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
 
